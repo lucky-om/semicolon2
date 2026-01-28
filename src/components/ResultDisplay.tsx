@@ -3,10 +3,11 @@ import { cn } from "@/lib/utils";
 interface ResultDisplayProps {
   teamName: string;
   selectedCard: number | null;
+  selectedCardName: string | null;
   visible: boolean;
 }
 
-const ResultDisplay = ({ teamName, selectedCard, visible }: ResultDisplayProps) => {
+const ResultDisplay = ({ teamName, selectedCard, selectedCardName, visible }: ResultDisplayProps) => {
   if (!visible || selectedCard === null) return null;
 
   return (
@@ -24,7 +25,7 @@ const ResultDisplay = ({ teamName, selectedCard, visible }: ResultDisplayProps) 
           Team <span className="text-primary neon-text">{teamName}</span>
         </p>
         <p className="font-display text-xl md:text-2xl mt-1">
-          drew Card <span className="text-secondary neon-text-magenta">#{selectedCard}</span>
+          drew <span className="text-secondary neon-text-magenta">{selectedCardName}</span>
         </p>
       </div>
     </div>

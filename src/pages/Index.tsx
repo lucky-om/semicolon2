@@ -7,6 +7,8 @@ import SoundToggle from "@/components/SoundToggle";
 import ResultDisplay from "@/components/ResultDisplay";
 import VictoryRipple from "@/components/VictoryRipple";
 import { useSound } from "@/hooks/useSound";
+import { useWildcards } from "@/hooks/useWildcards";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const [teamName, setTeamName] = useState("");
@@ -20,6 +22,7 @@ const Index = () => {
   const [showVictory, setShowVictory] = useState(false);
 
   const { playShuffleSound, playVictorySound } = useSound();
+  const { data: wildcards, isLoading, error } = useWildcards();
 
   const handleTeamSubmit = (name: string) => {
     setTeamName(name);
@@ -27,7 +30,7 @@ const Index = () => {
   };
 
   const handleSpin = useCallback(async () => {
-    if (isSpinUsed || isSpinning || !isTeamLocked) return;
+    if (isSpinUsed || isSpinning || !isTeamLocked || !wildcards) return;
 
     setIsSpinning(true);
     setShowResult(false);
@@ -73,7 +76,33 @@ const Index = () => {
     setTimeout(() => {
       setShowResult(true);
     }, 300);
-  }, [isSpinUsed, isSpinning, isTeamLocked, soundEnabled, playShuffleSound, playVictorySound]);
+  }, [isSpinUsed, isSpinning, isTeamLocked, soundEnabled, playShuffleSound, playVictorySound, wildcards]);
+
+  const getWildcardName = (cardNumber: number) => {
+    const wildcard = wildcards?.find(w => w.card_number === cardNumber);
+    return wildcard?.name || `Card ${cardNumber}`;
+  };
+
+  const selectedCardName = selectedCard ? getWildcardName(selectedCard) : null;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="glass-card-glow rounded-2xl px-8 py-6 text-center">
+          <p className="font-display text-xl text-destructive">Failed to load wildcards</p>
+          <p className="font-body text-muted-foreground mt-2">Please refresh the page</p>
+        </div>
+      </div>
+    );
+  }
 
   const cards: (1 | 2 | 3)[] = [1, 2, 3];
 
@@ -117,6 +146,7 @@ const Index = () => {
             <WildcardCard
               key={num}
               number={num}
+              name={getWildcardName(num)}
               isSelected={selectedCard === num}
               isSpinning={spinningCard === num}
               isRevealed={isSpinUsed}
@@ -137,6 +167,7 @@ const Index = () => {
         <ResultDisplay
           teamName={teamName}
           selectedCard={selectedCard}
+          selectedCardName={selectedCardName}
           visible={showResult}
         />
       </div>

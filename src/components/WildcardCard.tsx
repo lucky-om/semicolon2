@@ -2,13 +2,14 @@ import { cn } from "@/lib/utils";
 
 interface WildcardCardProps {
   number: 1 | 2 | 3;
+  name: string;
   isSelected: boolean;
   isSpinning: boolean;
   isRevealed: boolean;
   isLoser: boolean;
 }
 
-const WildcardCard = ({ number, isSelected, isSpinning, isRevealed, isLoser }: WildcardCardProps) => {
+const WildcardCard = ({ number, name, isSelected, isSpinning, isRevealed, isLoser }: WildcardCardProps) => {
   return (
     <div
       className={cn(
@@ -39,19 +40,19 @@ const WildcardCard = ({ number, isSelected, isSpinning, isRevealed, isLoser }: W
         {/* Card number */}
         <div 
           className={cn(
-            "font-display text-6xl md:text-7xl font-black transition-all duration-500",
-            isSelected && isRevealed ? "text-primary neon-text scale-125" : "text-muted-foreground"
+            "font-display text-5xl md:text-6xl font-black transition-all duration-500",
+            isSelected && isRevealed ? "text-primary neon-text scale-110" : "text-muted-foreground"
           )}
         >
           {number}
         </div>
 
-        {/* Wildcard label */}
+        {/* Wildcard name */}
         <div className={cn(
-          "mt-4 font-body text-sm md:text-base uppercase tracking-[0.3em] transition-all duration-500",
-          isSelected && isRevealed ? "text-primary" : "text-muted-foreground/60"
+          "mt-4 font-display text-base md:text-lg uppercase tracking-wider text-center transition-all duration-500 px-2",
+          isSelected && isRevealed ? "text-primary neon-text" : "text-muted-foreground/80"
         )}>
-          Wildcard
+          {name}
         </div>
 
         {/* Selection indicator */}
